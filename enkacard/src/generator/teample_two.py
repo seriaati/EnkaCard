@@ -1,12 +1,14 @@
 import asyncio
-from PIL import ImageDraw,Image,ImageChops
-from enkanetwork.model.stats import CharacterStats
 
-from ..utils import pill, git,diagram,options
 from enkanetwork.enum import EquipmentsType
-from .two import background, artifact, stat, skill
-from .one import weapon,constant
+from enkanetwork.model.stats import CharacterStats
+from PIL import Image, ImageChops, ImageDraw
+
+from ..utils import diagram, git, options, pill
 from .akasha_rank import AkashaCreat
+from .one import constant, weapon
+from .two import artifact, background, skill, stat
+
 _of = git.ImageCache()
 
 
@@ -133,8 +135,6 @@ class Creat:
                 user_data.append({"name": name.replace(".",".\n").replace(" ","\n"), "value": value})
                 akasha_data.append({"name": name.replace(".",".\n").replace(" ","\n"), "value": chartsData[key]})
 
-        print(akasha_data)
-        
         self.diagram = await diagram.RadialChart(user_data, akasha_data, self.character.element.value).create_normalized_radial_chart() #create_normalized_radial_chart(user_data,akasha_data,self.character.element.value)
 
     async def creat_stat(self):
