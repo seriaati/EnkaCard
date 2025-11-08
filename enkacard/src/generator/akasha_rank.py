@@ -19,10 +19,13 @@ class AkashaCreat:
         self.teample = teample
         self.rank = rank
         self.uid = uid
+        self.headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+        }
     
     async def get_hash(self, charter_id):
         async with aiohttp.ClientSession() as session:
-            async with session.get(api_url.format(uid = self.uid)) as response:
+            async with session.get(api_url.format(uid = self.uid), headers=self.headers) as response:
                 data = await response.json()
                 for key in data["data"]:
                     if str(charter_id) == str(key["characterId"]):
@@ -30,14 +33,14 @@ class AkashaCreat:
     
     async def update(self):
         async with aiohttp.ClientSession() as session:
-            async with session.get(api_update.format(uid = self.uid)) as response:
+            async with session.get(api_update.format(uid = self.uid), headers=self.headers) as response:
                 return await response.json()
     
     async def get_info_character(self, id):
         hash = await self.get_hash(id)
         url = f'https://akasha.cv/api/leaderboards/{self.uid}/{hash}?variant=profilePage'
         async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
+            async with session.get(url, headers=self.headers) as response:
                 if response.status == 200:
                     data = await response.json()
                     return data["data"]
@@ -48,7 +51,7 @@ class AkashaCreat:
         akaska_info = []
         if not self.uid in data_akasha:
             async with aiohttp.ClientSession() as session:
-                async with session.get(api_url.format(uid = self.uid)) as response:
+                async with session.get(api_url.format(uid = self.uid), headers=self.headers) as response:
                     data = await response.json()
                     for key in data.get("data", []):
                         calculator = key.get("calculations", {}).get("fit", {})
